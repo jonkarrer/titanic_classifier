@@ -28,3 +28,40 @@ Survived (contains your binary predictions: 1 for survived, 0 for deceased)
 ## Data
 
 The dataset used in this challenge can be found [on kaggle](https://www.kaggle.com/competitions/titanic/data).
+
+| Variable | Definition                                 | Key                                            |
+| -------- | ------------------------------------------ | ---------------------------------------------- |
+| survival | Survival                                   | 0 = No, 1 = Yes                                |
+| pclass   | Ticket class                               | 1 = 1st, 2 = 2nd, 3 = 3rd                      |
+| sex      | Sex                                        |                                                |
+| age      | Age in years                               |                                                |
+| sibsp    | # of siblings / spouses aboard the Titanic |                                                |
+| parch    | # of parents / children aboard the Titanic |                                                |
+| ticket   | Ticket number                              |                                                |
+| fare     | Passenger fare                             |                                                |
+| cabin    | Cabin number                               |                                                |
+| embarked | Port of Embarkation                        | C = Cherbourg, Q = Queenstown, S = Southampton |
+
+### Visualize
+
+Visualizing data can help with insight and weaknesses in the data. Those weaknesses need to be amended and the insights need to be leveraged.
+
+We will use [Plotly](https://github.com/plotly/plotly.rs/tree/main) to create plots.
+
+Here are some examples:
+
+- Age histogram
+- Fare histogram
+- Survival rate by class
+- Survival rate by sex
+- Survival rate by age
+
+### Insights
+
+- Most people were between 20-30 years old
+- The ratio of survivors to non-survivors for each class is:
+  - 1st class: 8:25
+  - 2nd class: 9:10
+  - 3rd class: 1.7:1
+- Highest survival rate by age was below the age of 10.
+- The survival rate for females was higher than for males
