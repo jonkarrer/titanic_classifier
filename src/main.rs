@@ -73,24 +73,28 @@ fn main() {
         .map(|item| item.expect("not a valid record"))
         .collect();
 
-    // cleaning
     let ages: Vec<f32> = records.iter().map(|record| record.Age as f32).collect();
     let survived: Vec<f32> = records
         .iter()
         .map(|record| record.Survived as f32)
         .collect();
+    let classes: Vec<f32> = records.iter().map(|record| record.Pclass as f32).collect();
+    let fares: Vec<f32> = records.iter().map(|record| record.Fare).collect();
 
     // visualize data
-    age_histogram(&records);
-    fare_histogram(&records);
-    survive_by_class_bar_chart(&records);
-    survive_by_sex_bar_chart(&records);
-    survive_by_age_bar_chart(&records);
+    // age_histogram(&records);
+    // fare_histogram(&records);
+    // survive_by_class_bar_chart(&records);
+    // survive_by_sex_bar_chart(&records);
+    // survive_by_age_bar_chart(&records);
+    // scatter_plot(&fares, &ages, "Fares vs. Age", "Fares", "Ages");
 
     // correlations
-    correlation_scatter_plot(&ages, &survived, "Ages vs. Survival", "Age", "Survival");
-    // let coef = pearson_correlation(&ages, &survived);
-    // dbg!(coef);
+    let age_to_survived = pearson_correlation(&ages, &survived);
+    let fare_to_survived = pearson_correlation(&fares, &survived);
+    let class_to_survived = pearson_correlation(&classes, &survived);
+
+    dbg!(age_to_survived, fare_to_survived, class_to_survived);
 }
 
 fn survive_by_class_bar_chart(records: &Vec<TitanicRecord>) {
@@ -300,24 +304,21 @@ fn survive_by_age_bar_chart(records: &Vec<TitanicRecord>) {
     plot.write_html("survival_rate_by_age.html");
 }
 
-fn correlation_scatter_plot(
-    x_vals: &[f32],
-    y_vals: &[f32],
-    title: &str,
-    x_label: &str,
-    y_label: &str,
-) {
+fn scatter_plot(x_vals: &[f32], y_vals: &[f32], title: &str, x_label: &str, y_label: &str) {
     let coef = pearson_correlation(x_vals, y_vals);
 
     // Create the scatter plot
-    let trace = Scatter::new(x_vals.to_vec(), y_vals.to_vec())
+    let x = x_vals.to_vec();
+    let y = y_vals.to_vec();
+    dbg!(x.len(), y.len());
+    let trace = Scatter::new(x, y)
         .name(title)
         .mode(plotly::common::Mode::Markers);
 
     let layout = Layout::new()
         .title(format!("{}: r = {:.2}", title, coef))
         .x_axis(Axis::new().title(x_label))
-        .y_axis(Axis::new().title(y_label).tick_values(vec![0.0, 2.0]));
+        .y_axis(Axis::new().title(y_label));
 
     let mut plot = Plot::new();
     plot.add_trace(trace);
