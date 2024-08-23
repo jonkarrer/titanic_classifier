@@ -1,4 +1,4 @@
-use plotly::{common::Title, layout::Axis, Bar, Histogram, Layout, Plot};
+use plotly::{common::Title, layout::Axis, Bar, Histogram, Layout, Plot, Scatter};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -30,11 +30,13 @@ fn main() {
         .collect();
 
     // visualize data
-    age_histogram(&records);
-    fare_histogram(&records);
-    survive_by_class_bar_chart(&records);
-    survive_by_sex_bar_chart(&records);
-    survive_by_age_bar_chart(&records);
+    // age_histogram(&records);
+    // fare_histogram(&records);
+    // survive_by_class_bar_chart(&records);
+    // survive_by_sex_bar_chart(&records);
+    // survive_by_age_bar_chart(&records);
+
+    // correlations
 }
 
 fn survive_by_class_bar_chart(records: &Vec<TitanicRecord>) {
@@ -243,4 +245,58 @@ fn survive_by_age_bar_chart(records: &Vec<TitanicRecord>) {
 
     // Save the plot to an HTML file
     plot.write_html("survival_rate_by_age.html");
+}
+
+fn correlation_scatter_plot(
+    x_vals: &[f32],
+    y_vals: &[f32],
+    title: &str,
+    x_label: &str,
+    y_label: &str,
+) {
+    let coef = pearson_correlation(x_vals, y_vals);
+
+    // Create the scatter plot
+    let trace = Scatter::new(x_vals.to_vec(), y_vals.to_vec())
+        .name(title)
+        .mode(plotly::common::Mode::Markers);
+
+    let layout = Layout::new()
+        .title(format!("{}: r = {:.2}", title, coef))
+        .x_axis(Axis::new().title(x_label))
+        .y_axis(Axis::new().title(y_label).tick_values(vec![0.0, 2.0]));
+
+    let mut plot = Plot::new();
+    plot.add_trace(trace);
+    plot.set_layout(layout);
+
+    // Save the plot to an HTML file
+    plot.write_html("age_vs_fare_scatter.html");
+}
+
+fn pearson_correlation(x: &[f32], y: &[f32]) -> f32 {
+    if x.len() != y.len() {
+        panic!("Vectors must have the same length");
+    }
+
+    let n = x.len() as f32;
+    let mean_x = x.iter().sum::<f32>() / n;
+    let mean_y = y.iter().sum::<f32>() / n;
+
+    let mut covariance = 0.0;
+    let mut variance_x = 0.0;
+    let mut variance_y = 0.0;
+
+    for i in 0..x.len() {
+        let diff_x = x[i] - mean_x;
+        let diff_y = y[i] - mean_y;
+        covariance += diff_x * diff_y;
+        variance_x += diff_x * diff_x;
+        variance_y += diff_y * diff_y;
+    }
+
+    let stddev_x = variance_x.sqrt();
+    let stddev_y = variance_y.sqrt();
+
+    covariance / (stddev_x * stddev_y)
 }

@@ -42,6 +42,12 @@ The dataset used in this challenge can be found [on kaggle](https://www.kaggle.c
 | cabin    | Cabin number                               |                                                |
 | embarked | Port of Embarkation                        | C = Cherbourg, Q = Queenstown, S = Southampton |
 
+### Cleaning
+
+Often, raw data is a bit messy. It can be missing values or have unusual values. Outliers can also be present. So the first step is to clean the data. And to do that, we need to know where the messiness is and then how to clean it.
+
+First, let's see what is missing.
+
 ### Visualize
 
 Visualizing data can help with insight and weaknesses in the data. Those weaknesses need to be amended and the insights need to be leveraged.
@@ -55,6 +61,13 @@ Here are some examples:
 - Survival rate by class
 - Survival rate by sex
 - Survival rate by age
+
+### Correlations
+
+Correlations can help with finding relationships between variables. Strong correlations can be indicative of a linear relationship.
+
+- Correlation between fare and survival: 0.26
+- Correlation between age and survival: 0.50
 
 ### Insights
 
