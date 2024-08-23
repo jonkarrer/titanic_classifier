@@ -44,9 +44,17 @@ The dataset used in this challenge can be found [on kaggle](https://www.kaggle.c
 
 ### Cleaning
 
-Often, raw data is a bit messy. It can be missing values or have unusual values. Outliers can also be present. So the first step is to clean the data. And to do that, we need to know where the messiness is and then how to clean it.
+Often, raw data is a bit messy. Let's clean it up.
 
-First, let's see what is missing.
+#### Missing data
+
+We see age is missing 177, cabin is missing 687, and embarked is missing 2.
+
+The mode for age is 24, the mode for cabin is "C23 C25 C27", and the mode for embarked is "S".
+
+Simple enough, we can fill in the missing values.
+
+#### Outliers
 
 ### Visualize
 
@@ -67,7 +75,8 @@ Here are some examples:
 Correlations can help with finding relationships between variables. Strong correlations can be indicative of a linear relationship.
 
 - Correlation between fare and survival: 0.26
-- Correlation between age and survival: 0.50
+- Correlation between age and survival: -0.05
+- Correlation between class and survival: 0.55
 
 ### Insights
 
@@ -78,3 +87,7 @@ Correlations can help with finding relationships between variables. Strong corre
   - 3rd class: 1.7:1
 - Highest survival rate by age was below the age of 10.
 - The survival rate for females was higher than for males
+
+```
+
+```

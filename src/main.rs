@@ -1,5 +1,7 @@
+use std::collections::HashMap;
+
 use plotly::{common::Title, layout::Axis, Bar, Histogram, Layout, Plot, Scatter};
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
 
 #[derive(Debug, Deserialize)]
 struct TitanicRecord {
@@ -8,13 +10,55 @@ struct TitanicRecord {
     Pclass: u8,
     Name: String,
     Sex: String,
-    Age: Option<f32>,
+    #[serde(deserialize_with = "option_float_to_int")]
+    Age: u32,
     SibSp: u8,
     Parch: u8,
     Ticket: String,
     Fare: f32,
-    Cabin: Option<String>,
-    Embarked: Option<String>,
+    #[serde(deserialize_with = "option_string_to_string_cabin")]
+    Cabin: String,
+    #[serde(deserialize_with = "option_string_to_string_embark")]
+    Embarked: String,
+}
+
+fn option_float_to_int<'de, D>(deserializer: D) -> Result<u32, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Option::<f32>::deserialize(deserializer).map(|record| {
+        if let Some(age) = record {
+            age as u32
+        } else {
+            24 as u32
+        }
+    })
+}
+
+fn option_string_to_string_embark<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Option::<String>::deserialize(deserializer).map(|record| {
+        if let Some(embarked) = record {
+            embarked
+        } else {
+            "S".to_string()
+        }
+    })
+}
+
+fn option_string_to_string_cabin<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    Option::<String>::deserialize(deserializer).map(|record| {
+        if let Some(cabin) = record {
+            cabin
+        } else {
+            "C23 C25 C27".to_string()
+        }
+    })
 }
 
 fn main() {
@@ -29,14 +73,24 @@ fn main() {
         .map(|item| item.expect("not a valid record"))
         .collect();
 
+    // cleaning
+    let ages: Vec<f32> = records.iter().map(|record| record.Age as f32).collect();
+    let survived: Vec<f32> = records
+        .iter()
+        .map(|record| record.Survived as f32)
+        .collect();
+
     // visualize data
-    // age_histogram(&records);
-    // fare_histogram(&records);
-    // survive_by_class_bar_chart(&records);
-    // survive_by_sex_bar_chart(&records);
-    // survive_by_age_bar_chart(&records);
+    age_histogram(&records);
+    fare_histogram(&records);
+    survive_by_class_bar_chart(&records);
+    survive_by_sex_bar_chart(&records);
+    survive_by_age_bar_chart(&records);
 
     // correlations
+    correlation_scatter_plot(&ages, &survived, "Ages vs. Survival", "Age", "Survival");
+    // let coef = pearson_correlation(&ages, &survived);
+    // dbg!(coef);
 }
 
 fn survive_by_class_bar_chart(records: &Vec<TitanicRecord>) {
@@ -79,10 +133,10 @@ fn survive_by_class_bar_chart(records: &Vec<TitanicRecord>) {
 
 fn age_histogram(records: &Vec<TitanicRecord>) {
     // Extract ages and filter out None values
-    let ages: Vec<f32> = records.iter().filter_map(|record| record.Age).collect();
+    let ages: Vec<u32> = records.iter().map(|record| record.Age).collect();
 
     // Define bins and count frequencies
-    let bin_size = 10.0;
+    let bin_size = 10;
     let mut bins = vec![0; 10]; // Assuming ages range from 0 to 100
     for age in ages {
         let bin_index = (age / bin_size) as usize;
@@ -198,18 +252,17 @@ fn fare_histogram(records: &Vec<TitanicRecord>) {
 
 fn survive_by_age_bar_chart(records: &Vec<TitanicRecord>) {
     // Define age bins and calculate survival rates
-    let bin_size = 10.0;
+    let bin_size = 10;
     let num_bins = 8;
     let mut age_bins = vec![(0, 0); num_bins]; // (total, survived)
 
     for record in records {
-        if let Some(age) = record.Age {
-            let bin_index = (age / bin_size) as usize;
-            if bin_index < age_bins.len() {
-                age_bins[bin_index].0 += 1;
-                if record.Survived == 1 {
-                    age_bins[bin_index].1 += 1;
-                }
+        let age = record.Age;
+        let bin_index = (age / bin_size) as usize;
+        if bin_index < age_bins.len() {
+            age_bins[bin_index].0 += 1;
+            if record.Survived == 1 {
+                age_bins[bin_index].1 += 1;
             }
         }
     }
@@ -271,7 +324,42 @@ fn correlation_scatter_plot(
     plot.set_layout(layout);
 
     // Save the plot to an HTML file
-    plot.write_html("age_vs_fare_scatter.html");
+
+    plot.write_html(format!(
+        "{}_{}_scatter.html",
+        x_label.to_lowercase(),
+        y_label.to_lowercase()
+    ));
+}
+
+fn mode_nums(numbers: &Vec<u32>) -> Vec<u32> {
+    let mut map = HashMap::new();
+    for integer in numbers {
+        let count = map.entry(integer).or_insert(0);
+        *count += 1;
+    }
+
+    let max_value = map.values().cloned().max().unwrap_or(0);
+
+    map.into_iter()
+        .filter(|&(_, v)| v == max_value)
+        .map(|(&k, _)| k)
+        .collect()
+}
+
+fn mode_strs(strings: Vec<String>) -> Vec<String> {
+    let mut map = HashMap::new();
+    for string in strings {
+        let count = map.entry(string).or_insert(0);
+        *count += 1;
+    }
+
+    let max_value = map.values().cloned().max().unwrap_or(0);
+
+    map.into_iter()
+        .filter(|&(_, v)| v == max_value)
+        .map(|(k, _)| k)
+        .collect()
 }
 
 fn pearson_correlation(x: &[f32], y: &[f32]) -> f32 {
