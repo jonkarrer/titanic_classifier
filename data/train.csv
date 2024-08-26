@@ -257,7 +257,6 @@ PassengerId,Survived,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
 256,1,3,"Touma, Mrs. Darwis (Hanne Youssef Razi)",female,29,0,2,2650,15.2458,,C
 257,1,1,"Thorne, Mrs. Gertrude Maybelle",female,,0,0,PC 17585,79.2,,C
 258,1,1,"Cherry, Miss. Gladys",female,30,0,0,110152,86.5,B77,S
-259,1,1,"Ward, Miss. Anna",female,35,0,0,PC 17755,512.3292,,C
 260,1,2,"Parrish, Mrs. (Lutie Davis)",female,50,0,1,230433,26,,S
 261,0,3,"Smith, Mr. Thomas",male,,0,0,384461,7.75,,Q
 262,1,3,"Asplund, Master. Edvin Rojj Felix",male,3,4,2,347077,31.3875,,S
@@ -678,7 +677,6 @@ PassengerId,Survived,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
 677,0,3,"Sawyer, Mr. Frederick Charles",male,24.5,0,0,342826,8.05,,S
 678,1,3,"Turja, Miss. Anna Sofia",female,18,0,0,4138,9.8417,,S
 679,0,3,"Goodwin, Mrs. Frederick (Augusta Tyler)",female,43,1,6,CA 2144,46.9,,S
-680,1,1,"Cardeza, Mr. Thomas Drake Martinez",male,36,0,1,PC 17755,512.3292,B51 B53 B55,C
 681,0,3,"Peters, Miss. Katie",female,,0,0,330935,8.1375,,Q
 682,1,1,"Hassab, Mr. Hammad",male,27,0,0,PC 17572,76.7292,D49,C
 683,0,3,"Olsvigen, Mr. Thor Anderson",male,20,0,0,6563,9.225,,S
@@ -736,7 +734,6 @@ PassengerId,Survived,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
 735,0,2,"Troupiansky, Mr. Moses Aaron",male,23,0,0,233639,13,,S
 736,0,3,"Williams, Mr. Leslie",male,28.5,0,0,54636,16.1,,S
 737,0,3,"Ford, Mrs. Edward (Margaret Ann Watson)",female,48,1,3,W./C. 6608,34.375,,S
-738,1,1,"Lesurer, Mr. Gustave J",male,35,0,0,PC 17755,512.3292,B101,C
 739,0,3,"Ivanoff, Mr. Kanio",male,,0,0,349201,7.8958,,S
 740,0,3,"Nankoff, Mr. Minko",male,,0,0,349218,7.8958,,S
 741,1,1,"Hawksford, Mr. Walter James",male,,0,0,16988,30,D45,S

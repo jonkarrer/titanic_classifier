@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use std::collections::HashMap;
 
 use plotly::{layout::Axis, Bar, Layout, Plot, Scatter};
@@ -5,22 +6,22 @@ use serde::{Deserialize, Deserializer};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
-struct TitanicRecord {
-    passenger_id: u32,
-    survived: u8,
-    pclass: u8,
-    name: String,
-    sex: String,
+pub struct TitanicRecord {
+    pub passenger_id: u32,
+    pub survived: u8,
+    pub pclass: u8,
+    pub name: String,
+    pub sex: String,
     #[serde(deserialize_with = "option_float_to_int")]
-    age: u32,
-    sib_sp: u8,
-    parch: u8,
-    ticket: String,
-    fare: f32,
+    pub age: u32,
+    pub sib_sp: u8,
+    pub parch: u8,
+    pub ticket: String,
+    pub fare: f32,
     #[serde(deserialize_with = "option_string_to_string_cabin")]
-    cabin: String,
+    pub cabin: String,
     #[serde(deserialize_with = "option_string_to_string_embark")]
-    embarked: String,
+    pub embarked: String,
 }
 
 fn option_float_to_int<'de, D>(deserializer: D) -> Result<u32, D::Error>
@@ -62,15 +63,15 @@ where
     })
 }
 
-pub struct RecordStore {
-    records: Vec<TitanicRecord>,
-}
+pub struct RawData(Vec<TitanicRecord>);
 
-impl RecordStore {
-    pub fn new() -> RecordStore {
-        RecordStore {
-            records: Self::collect_records(),
-        }
+impl RawData {
+    pub fn new() -> RawData {
+        RawData(Self::collect_records())
+    }
+
+    pub fn get_all_rows(&self) -> &Vec<TitanicRecord> {
+        &self.0
     }
 
     fn collect_records() -> Vec<TitanicRecord> {
@@ -85,66 +86,51 @@ impl RecordStore {
     }
 
     pub fn get_ages(&self) -> Vec<f32> {
-        self.records
-            .iter()
-            .map(|record| record.age as f32)
-            .collect()
+        self.0.iter().map(|record| record.age as f32).collect()
     }
 
     pub fn get_survived(&self) -> Vec<f32> {
-        self.records
-            .iter()
-            .map(|record| record.survived as f32)
-            .collect()
+        self.0.iter().map(|record| record.survived as f32).collect()
     }
 
     pub fn get_classes(&self) -> Vec<f32> {
-        self.records
-            .iter()
-            .map(|record| record.pclass as f32)
-            .collect()
+        self.0.iter().map(|record| record.pclass as f32).collect()
     }
 
     pub fn get_fares(&self) -> Vec<f32> {
-        self.records.iter().map(|record| record.fare).collect()
+        self.0.iter().map(|record| record.fare).collect()
     }
 
     pub fn get_sexes(&self) -> Vec<f32> {
-        self.records
+        self.0
             .iter()
             .map(|record| if record.sex == "male" { 1.0 } else { 0.0 })
             .collect()
     }
 
     pub fn get_parch(&self) -> Vec<f32> {
-        self.records
-            .iter()
-            .map(|record| record.parch as f32)
-            .collect()
+        self.0.iter().map(|record| record.parch as f32).collect()
     }
 
     pub fn get_sibsp(&self) -> Vec<f32> {
-        self.records
-            .iter()
-            .map(|record| record.sib_sp as f32)
-            .collect()
+        self.0.iter().map(|record| record.sib_sp as f32).collect()
     }
 }
 
 pub struct Visualizer {
-    store: RecordStore,
+    store: RawData,
 }
 
 impl Visualizer {
     pub fn new() -> Visualizer {
         Visualizer {
-            store: RecordStore::new(),
+            store: RawData::new(),
         }
     }
 
-    fn survive_by_class_bar_chart(records: &Vec<TitanicRecord>) {
+    fn survive_by_class_bar_chart(&self) {
         let mut class_survival_count = vec![(0, 0, 0); 3]; // (class, survived, not_survived)
-        for record in records {
+        for record in &self.store.0 {
             let class = record.pclass as usize - 1;
             if record.survived == 1 {
                 class_survival_count[class].1 += 1;
@@ -180,12 +166,12 @@ impl Visualizer {
         plot.write_html("survive_by_class_bar_chart.html");
     }
 
-    fn age_histogram(records: &Vec<TitanicRecord>) {
+    fn age_histogram(&self) {
         // Extract ages and filter out None values
-        let ages: Vec<u32> = records.iter().map(|record| record.age).collect();
+        let ages = self.store.get_ages();
 
         // Define bins and count frequencies
-        let bin_size = 10;
+        let bin_size = 10.0;
         let mut bins = vec![0; 10]; // Assuming ages range from 0 to 100
         for age in ages {
             let bin_index = (age / bin_size) as usize;
@@ -214,14 +200,14 @@ impl Visualizer {
         plot.write_html("age_histogram.html");
     }
 
-    fn survive_by_sex_bar_chart(records: &Vec<TitanicRecord>) {
+    fn survive_by_sex_bar_chart(&self) {
         // Calculate survival rates by sex
         let mut male_count = 0;
         let mut male_survived = 0;
         let mut female_count = 0;
         let mut female_survived = 0;
 
-        for record in records {
+        for record in &self.store.0 {
             if record.sex == "male" {
                 male_count += 1;
                 if record.survived == 1 {
@@ -258,9 +244,9 @@ impl Visualizer {
         plot.write_html("survival_rate_by_sex.html");
     }
 
-    fn fare_histogram(records: &Vec<TitanicRecord>) {
+    fn fare_histogram(&self) {
         // Extract fares
-        let fares: Vec<f32> = records.iter().map(|record| record.fare).collect();
+        let fares = self.store.get_fares();
 
         // Define bins and count frequencies
         let bin_size = 10.0;
@@ -299,13 +285,13 @@ impl Visualizer {
         plot.write_html("fare_histogram.html");
     }
 
-    fn survive_by_age_bar_chart(records: &Vec<TitanicRecord>) {
+    fn survive_by_age_bar_chart(&self) {
         // Define age bins and calculate survival rates
         let bin_size = 10;
         let num_bins = 8;
         let mut age_bins = vec![(0, 0); num_bins]; // (total, survived)
 
-        for record in records {
+        for record in &self.store.0 {
             let age = record.age;
             let bin_index = (age / bin_size) as usize;
             if bin_index < age_bins.len() {

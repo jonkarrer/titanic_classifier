@@ -56,6 +56,8 @@ Simple enough, we can fill in the missing values.
 
 #### Outliers
 
+There are 3 fare outliers, we will just remove them.
+
 ### Visualize
 
 Visualizing data can help with insight and weaknesses in the data. Those weaknesses need to be amended and the insights need to be leveraged.
@@ -92,3 +94,7 @@ Correlations can help with finding relationships between variables. Strong corre
 - The survival rate for females was higher than for males
 - Weak correlation between survival and sex, class, and age
 - Strong correlation between survival and fare
+
+## Classification
+
+Now we need to create our features and classifications.
