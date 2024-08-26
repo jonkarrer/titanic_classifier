@@ -74,9 +74,12 @@ Here are some examples:
 
 Correlations can help with finding relationships between variables. Strong correlations can be indicative of a linear relationship.
 
-- Correlation between fare and survival: 0.26
 - Correlation between age and survival: -0.05
-- Correlation between class and survival: 0.55
+- Correlation between fare and survival: 0.26
+- Correlation between class and survival: -0.37
+- Correlation between sex and survival: -0.54
+- Correlation between parch and survival: 0.08
+- Correlation between sibsp and survival: -0.04
 
 ### Insights
 
@@ -87,7 +90,5 @@ Correlations can help with finding relationships between variables. Strong corre
   - 3rd class: 1.7:1
 - Highest survival rate by age was below the age of 10.
 - The survival rate for females was higher than for males
-
-```
-
-```
+- Weak correlation between survival and sex, class, and age
+- Strong correlation between survival and fare
