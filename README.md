@@ -150,8 +150,6 @@ Configuration:
 - Batch Size: 798
 - Features: 6
 - Hidden Size: 64
-- Target: 1
-- Activation: Relu
 
 ```shell
 [Train - Epoch 0] Loss 31.089 | Accuracy 38.221 %
@@ -182,14 +180,12 @@ Configuration:
 Configuration:
 
 - Loss Function: Binary Cross Entropy Loss (with sigmoid activation)
-- Optimizer: Stochastic Gradient Descent
+- Optimizer: Stochastic Gradient Descent (with clipping)
 - Learning Rate: 7e-3
 - Epochs: 15
 - Batch Size: 798
 - Features: 6
 - Hidden Size: 64
-- Target: 1
-- Activation: Relu
 
 ```shell
 [Train - Epoch 0] Loss 2.759 | Accuracy 38.221 %
@@ -222,4 +218,74 @@ Configuration:
 *** [Validate - Epoch 13] Loss 0.606 | Accuracy 61.111 %
 [Train - Epoch 14] Loss 0.631 | Accuracy 66.291 %
 *** [Validate - Epoch 14] Loss 0.629 | Accuracy 64.444 %
+```
+
+### Run Three
+
+Configuration:
+
+- Loss Function: Binary Cross Entropy Loss (with sigmoid activation)
+- Optimizer: Stochastic Gradient Descent (without clipping)
+- Learning Rate: 1e-3
+- Epochs: 10
+- Batch Size: 798
+- Features: 6
+- Hidden Size: 64
+
+```shell
+[Train - Epoch 0] Loss 2.759 | Accuracy 38.221 %
+*** [Validate - Epoch 0] Loss 1.678 | Accuracy 37.778 %
+[Train - Epoch 1] Loss 1.906 | Accuracy 38.221 %
+*** [Validate - Epoch 1] Loss 1.082 | Accuracy 35.556 %
+[Train - Epoch 2] Loss 1.184 | Accuracy 38.095 %
+*** [Validate - Epoch 2] Loss 0.774 | Accuracy 60.000 %
+[Train - Epoch 3] Loss 0.779 | Accuracy 56.140 %
+*** [Validate - Epoch 3] Loss 0.723 | Accuracy 61.111 %
+[Train - Epoch 4] Loss 0.710 | Accuracy 61.905 %
+*** [Validate - Epoch 4] Loss 0.689 | Accuracy 62.222 %
+[Train - Epoch 5] Loss 0.679 | Accuracy 62.030 %
+*** [Validate - Epoch 5] Loss 0.671 | Accuracy 63.333 %
+[Train - Epoch 6] Loss 0.660 | Accuracy 62.281 %
+*** [Validate - Epoch 6] Loss 0.657 | Accuracy 64.444 %
+[Train - Epoch 7] Loss 0.648 | Accuracy 63.158 %
+*** [Validate - Epoch 7] Loss 0.648 | Accuracy 63.333 %
+[Train - Epoch 8] Loss 0.640 | Accuracy 63.158 %
+*** [Validate - Epoch 8] Loss 0.640 | Accuracy 63.333 %
+[Train - Epoch 9] Loss 0.635 | Accuracy 63.409 %
+*** [Validate - Epoch 9] Loss 0.634 | Accuracy 63.333 %
+```
+
+### Run Four
+
+Configuration:
+
+- Loss Function: Binary Cross Entropy Loss (with sigmoid activation)
+- Optimizer: Adam Optimizer
+- Learning Rate: 1e-2
+- Epochs: 10
+- Batch Size: 798
+- Features: 6
+- Hidden Size: 64
+
+```shell
+[Train - Epoch 0] Loss 2.759 | Accuracy 38.221 %
+*** [Validate - Epoch 0] Loss 0.902 | Accuracy 40.000 %
+[Train - Epoch 1] Loss 0.953 | Accuracy 36.341 %
+*** [Validate - Epoch 1] Loss 1.110 | Accuracy 62.222 %
+[Train - Epoch 2] Loss 1.258 | Accuracy 61.779 %
+*** [Validate - Epoch 2] Loss 1.243 | Accuracy 62.222 %
+[Train - Epoch 3] Loss 1.355 | Accuracy 61.779 %
+*** [Validate - Epoch 3] Loss 0.983 | Accuracy 62.222 %
+[Train - Epoch 4] Loss 1.000 | Accuracy 61.779 %
+*** [Validate - Epoch 4] Loss 0.692 | Accuracy 63.333 %
+[Train - Epoch 5] Loss 0.802 | Accuracy 67.544 %
+*** [Validate - Epoch 5] Loss 0.633 | Accuracy 67.778 %
+[Train - Epoch 6] Loss 0.879 | Accuracy 67.794 %
+*** [Validate - Epoch 6] Loss 0.671 | Accuracy 71.111 %
+[Train - Epoch 7] Loss 0.996 | Accuracy 68.421 %
+*** [Validate - Epoch 7] Loss 0.709 | Accuracy 73.333 %
+[Train - Epoch 8] Loss 1.075 | Accuracy 67.544 %
+*** [Validate - Epoch 8] Loss 0.714 | Accuracy 74.444 %
+[Train - Epoch 9] Loss 1.087 | Accuracy 67.043 %
+*** [Validate - Epoch 9] Loss 0.680 | Accuracy 72.222 %
 ```

@@ -1,7 +1,7 @@
 use burn::{
     config::Config,
     module::AutodiffModule,
-    optim::{GradientsParams, Optimizer, SgdConfig},
+    optim::{AdamConfig, GradientsParams, Optimizer, SgdConfig},
     tensor::backend::AutodiffBackend,
 };
 
@@ -21,7 +21,7 @@ pub struct ExpConfig {
     #[config(default = 42)]
     pub seed: u64,
 
-    pub optimizer: SgdConfig,
+    pub optimizer: AdamConfig,
 
     #[config(default = 6)]
     pub input_feature_len: usize,
@@ -31,9 +31,7 @@ pub struct ExpConfig {
 }
 
 pub fn train<B: AutodiffBackend>(device: B::Device) {
-    let optimizer = SgdConfig::new();
-    let optimizer = optimizer
-        .with_gradient_clipping(Some(burn::grad_clipping::GradientClippingConfig::Norm(1.0)));
+    let optimizer = AdamConfig::new();
     let config = ExpConfig::new(optimizer);
     let mut model: Model<B> = ModelConfig::new().init(&device);
     B::seed(config.seed);
@@ -42,7 +40,7 @@ pub fn train<B: AutodiffBackend>(device: B::Device) {
     let test_set: DataSet<<B as AutodiffBackend>::InnerBackend> = DataSet::testing(&device);
     let mut optim = config.optimizer.init();
 
-    for epoch in 0..15 {
+    for epoch in 0..10 {
         // training
         let batch = training_set.batch();
         let output = model.forward_step(&batch, &device);
@@ -56,7 +54,7 @@ pub fn train<B: AutodiffBackend>(device: B::Device) {
 
         let grads = output.loss.backward();
         let grads = GradientsParams::from_grads(grads, &model);
-        model = optim.step(7e-3, model, grads);
+        model = optim.step(1e-2, model, grads);
 
         // validation
         let model_valid = model.valid();
