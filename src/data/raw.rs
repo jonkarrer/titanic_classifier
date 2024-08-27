@@ -5,7 +5,7 @@ use plotly::{layout::Axis, Bar, Layout, Plot, Scatter};
 use serde::{Deserialize, Deserializer};
 
 #[derive(Debug, Deserialize)]
-#[serde(rename_all = "snake_case")]
+#[serde(rename_all = "PascalCase")]
 pub struct TitanicRecord {
     pub passenger_id: u32,
     pub survived: u8,
@@ -66,17 +66,17 @@ where
 pub struct RawData(Vec<TitanicRecord>);
 
 impl RawData {
-    pub fn new() -> RawData {
-        RawData(Self::collect_records())
+    pub fn new(path: &str) -> RawData {
+        RawData(Self::collect_records(path))
     }
 
     pub fn get_all_rows(&self) -> &Vec<TitanicRecord> {
         &self.0
     }
 
-    fn collect_records() -> Vec<TitanicRecord> {
+    fn collect_records(path: &str) -> Vec<TitanicRecord> {
         let mut reader = csv::ReaderBuilder::new()
-            .from_path(std::path::Path::new("data/train.csv"))
+            .from_path(std::path::Path::new(path))
             .expect("could not read csv");
 
         reader
@@ -124,7 +124,7 @@ pub struct Visualizer {
 impl Visualizer {
     pub fn new() -> Visualizer {
         Visualizer {
-            store: RawData::new(),
+            store: RawData::new("data/train.csv"),
         }
     }
 
