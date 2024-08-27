@@ -1,10 +1,8 @@
 use burn::{
     config::Config,
     module::AutodiffModule,
-    nn::loss::MseLoss,
     optim::{GradientsParams, Optimizer, SgdConfig},
-    prelude::Backend,
-    tensor::{activation::sigmoid, backend::AutodiffBackend, ElementConversion, Int, Tensor},
+    tensor::backend::AutodiffBackend,
 };
 
 use crate::{
@@ -34,6 +32,8 @@ pub struct ExpConfig {
 
 pub fn train<B: AutodiffBackend>(device: B::Device) {
     let optimizer = SgdConfig::new();
+    let optimizer = optimizer
+        .with_gradient_clipping(Some(burn::grad_clipping::GradientClippingConfig::Norm(1.0)));
     let config = ExpConfig::new(optimizer);
     let mut model: Model<B> = ModelConfig::new().init(&device);
     B::seed(config.seed);
@@ -42,61 +42,32 @@ pub fn train<B: AutodiffBackend>(device: B::Device) {
     let test_set: DataSet<<B as AutodiffBackend>::InnerBackend> = DataSet::testing(&device);
     let mut optim = config.optimizer.init();
 
-    for epoch in 0..20 {
+    for epoch in 0..15 {
         // training
         let batch = training_set.batch();
-        let t = batch.targets.clone();
-        let targets: Tensor<B, 2> = batch.targets.unsqueeze();
-        let output: Tensor<B, 2> = model.forward(batch.inputs);
-        let acc = accuracy(output.clone(), t);
-
-        let loss = MseLoss::new().forward(
-            output.clone(),
-            targets.clone(),
-            burn::nn::loss::Reduction::Mean,
-        );
+        let output = model.forward_step(&batch, &device);
 
         println!(
             "[Train - Epoch {}] Loss {:.3} | Accuracy {:.3} %",
             epoch,
-            loss.clone().into_scalar(),
-            acc,
+            output.loss.clone().into_scalar(),
+            output.accuracy
         );
 
-        let grads = loss.backward();
+        let grads = output.loss.backward();
         let grads = GradientsParams::from_grads(grads, &model);
-        model = optim.step(5e-5, model, grads);
+        model = optim.step(7e-3, model, grads);
 
         // validation
         let model_valid = model.valid();
         let batch = test_set.batch();
-        let t = batch.targets.clone();
-        let targets = batch.targets.unsqueeze();
-        let inputs = batch.inputs;
-        let output = model_valid.forward(inputs);
-
-        let loss = MseLoss::new().forward(
-            output.clone(),
-            targets.clone(),
-            burn::nn::loss::Reduction::Mean,
-        );
-
-        let acc = accuracy(output, t);
+        let output = model_valid.forward_step(&batch, &device);
 
         println!(
             "*** [Validate - Epoch {}] Loss {:.3} | Accuracy {:.3} %",
             epoch,
-            loss.clone().into_scalar(),
-            acc,
+            output.loss.into_scalar(),
+            output.accuracy,
         );
     }
-}
-
-fn accuracy<B: Backend>(output: Tensor<B, 2>, targets: Tensor<B, 1>) -> f32 {
-    let output = sigmoid(output);
-    let predictions: Tensor<B, 1, Int> = output.greater_elem(0.5).int().squeeze(1);
-    let num_predictions: usize = targets.dims().iter().product();
-    let num_corrects = predictions.equal(targets.int()).int().sum().into_scalar();
-
-    num_corrects.elem::<f32>() / num_predictions as f32 * 100.0
 }

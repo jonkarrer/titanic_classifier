@@ -1,13 +1,10 @@
-use burn::{
-    prelude::Backend,
-    tensor::{Float, Tensor},
-};
+use burn::{prelude::Backend, tensor::Tensor};
 
 use super::RawData;
 
 pub struct Batch<B: Backend> {
-    pub inputs: Tensor<B, 2>,  // [[f32, f32, ...], [f32, f32, ...], ...]
-    pub targets: Tensor<B, 1>, // [1.0,0.0,0.0,1.0,...]
+    pub inputs: Tensor<B, 2>, // [[f32, f32, ...], [f32, f32, ...], ...]
+    pub labels: Tensor<B, 2>, // [[1.0], [0.0], [0.0], [1.0],...]
 }
 
 pub struct DataPoint<B: Backend> {
@@ -61,18 +58,15 @@ impl<B: Backend> DataSet<B> {
 
     pub fn batch(&self) -> Batch<B> {
         let mut inputs: Vec<Tensor<B, 2>> = Vec::new();
-        let mut labels: Vec<Tensor<B, 1>> = Vec::new();
+        let mut labels: Vec<Tensor<B, 2>> = Vec::new();
 
         for dp in &self.data {
             inputs.push(dp.feature.clone().unsqueeze());
-            labels.push(dp.label.clone());
+            labels.push(dp.label.clone().unsqueeze());
         }
 
         let inputs = Tensor::cat(inputs, 0);
         let labels = Tensor::cat(labels, 0);
-        Batch {
-            inputs,
-            targets: labels,
-        }
+        Batch { inputs, labels }
     }
 }

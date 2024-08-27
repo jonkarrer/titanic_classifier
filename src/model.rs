@@ -1,12 +1,12 @@
-use std::process::Output;
-
 use burn::{
     config::Config,
     module::Module,
-    nn::{loss::MseLoss, Linear, LinearConfig, Relu},
+    nn::{loss::BinaryCrossEntropyLossConfig, Linear, LinearConfig, Relu},
     prelude::Backend,
-    tensor::{activation::sigmoid, ElementConversion, Int, Tensor},
+    tensor::{ElementConversion, Int, Tensor},
 };
+
+use crate::data::Batch;
 
 #[derive(Config)]
 pub struct ModelConfig {
@@ -35,6 +35,11 @@ impl ModelConfig {
     }
 }
 
+pub struct ClassificationOutput<B: Backend> {
+    pub loss: Tensor<B, 1>,
+    pub accuracy: f32,
+}
+
 #[derive(Module, Debug)]
 pub struct Model<B: Backend> {
     input_layer: Linear<B>,
@@ -50,14 +55,29 @@ impl<B: Backend> Model<B> {
         self.output_layer.forward(x)
     }
 
-    pub fn forward_step(&self, features: Tensor<B, 2>, labels: Tensor<B, 1>) -> Tensor<B, 1> {
-        let targets: Tensor<B, 2> = labels.unsqueeze();
-        let output: Tensor<B, 2> = self.forward(features);
+    pub fn forward_step(&self, batch: &Batch<B>, device: &B::Device) -> ClassificationOutput<B> {
+        let predictions = self.forward(batch.inputs.clone());
+        let labels = batch.labels.clone().int();
 
-        MseLoss::new().forward(
-            output.clone(),
-            targets.clone(),
-            burn::nn::loss::Reduction::Mean,
-        )
+        let accuracy = Self::accuracy(predictions.clone(), labels.clone());
+
+        let loss_func = BinaryCrossEntropyLossConfig::new()
+            .with_logits(true)
+            .init(device);
+        let loss = loss_func.forward(predictions.clone(), labels.clone());
+
+        ClassificationOutput { loss, accuracy }
+    }
+
+    fn accuracy(output: Tensor<B, 2>, targets: Tensor<B, 2, Int>) -> f32 {
+        let predictions: Tensor<B, 1, Int> = output.greater_elem(0.5).int().squeeze(1);
+        let num_predictions: usize = targets.dims().iter().product();
+        let num_corrects = predictions
+            .equal(targets.squeeze(1))
+            .int()
+            .sum()
+            .into_scalar();
+
+        num_corrects.elem::<f32>() / num_predictions as f32 * 100.0
     }
 }

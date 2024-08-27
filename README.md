@@ -139,7 +139,7 @@ Now we need to bring it altogether and train our model. We loop through epochs, 
 
 ## Results
 
-### Run one
+### Run One
 
 Configuration:
 
@@ -175,4 +175,51 @@ Configuration:
 [Train - Epoch 9] Loss 0.588 | Accuracy 35.088 %
 *** [Validate - Epoch 9] Loss 0.471 | Accuracy 34.444 %
 [Train - Epoch 10] Loss 0.544 | Accuracy 35.464 %
+```
+
+### Run Two
+
+Configuration:
+
+- Loss Function: Binary Cross Entropy Loss (with sigmoid activation)
+- Optimizer: Stochastic Gradient Descent
+- Learning Rate: 7e-3
+- Epochs: 15
+- Batch Size: 798
+- Features: 6
+- Hidden Size: 64
+- Target: 1
+- Activation: Relu
+
+```shell
+[Train - Epoch 0] Loss 2.759 | Accuracy 38.221 %
+*** [Validate - Epoch 0] Loss 2.184 | Accuracy 37.778 %
+[Train - Epoch 1] Loss 2.503 | Accuracy 38.221 %
+*** [Validate - Epoch 1] Loss 1.969 | Accuracy 37.778 %
+[Train - Epoch 2] Loss 2.251 | Accuracy 38.221 %
+*** [Validate - Epoch 2] Loss 1.760 | Accuracy 37.778 %
+[Train - Epoch 3] Loss 2.004 | Accuracy 38.221 %
+*** [Validate - Epoch 3] Loss 1.557 | Accuracy 36.667 %
+[Train - Epoch 4] Loss 1.763 | Accuracy 38.221 %
+*** [Validate - Epoch 4] Loss 1.364 | Accuracy 36.667 %
+[Train - Epoch 5] Loss 1.531 | Accuracy 38.221 %
+*** [Validate - Epoch 5] Loss 1.183 | Accuracy 35.556 %
+[Train - Epoch 6] Loss 1.312 | Accuracy 37.970 %
+*** [Validate - Epoch 6] Loss 1.021 | Accuracy 35.556 %
+[Train - Epoch 7] Loss 1.111 | Accuracy 37.719 %
+*** [Validate - Epoch 7] Loss 0.884 | Accuracy 42.222 %
+[Train - Epoch 8] Loss 0.936 | Accuracy 41.353 %
+*** [Validate - Epoch 8] Loss 0.783 | Accuracy 54.444 %
+[Train - Epoch 9] Loss 0.801 | Accuracy 58.772 %
+*** [Validate - Epoch 9] Loss 0.724 | Accuracy 63.333 %
+[Train - Epoch 10] Loss 0.719 | Accuracy 60.150 %
+*** [Validate - Epoch 10] Loss 0.686 | Accuracy 63.333 %
+[Train - Epoch 11] Loss 0.674 | Accuracy 62.406 %
+*** [Validate - Epoch 11] Loss 0.646 | Accuracy 63.333 %
+[Train - Epoch 12] Loss 0.644 | Accuracy 63.659 %
+*** [Validate - Epoch 12] Loss 0.640 | Accuracy 64.444 %
+[Train - Epoch 13] Loss 0.630 | Accuracy 62.907 %
+*** [Validate - Epoch 13] Loss 0.606 | Accuracy 61.111 %
+[Train - Epoch 14] Loss 0.631 | Accuracy 66.291 %
+*** [Validate - Epoch 14] Loss 0.629 | Accuracy 64.444 %
 ```
