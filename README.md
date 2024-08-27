@@ -134,3 +134,45 @@ We will simply forward the batches through the model's layers, and calculate the
 Now we need to choose the optimizer and learning rate. For this we will use Stochastic Gradient Descent (SGD) with a learning rate of 1e-4 to start.
 
 ## Training
+
+Now we need to bring it altogether and train our model. We loop through epochs, and on each epoch we pass the batch through the model, calculate the loss, and backpropagate the gradients. Repeat until trained.
+
+## Results
+
+### Run one
+
+Configuration:
+
+- Loss Function: Mean Squared Error
+- Optimizer: Stochastic Gradient Descent
+- Learning Rate: 1e-4
+- Epochs: 10
+- Batch Size: 798
+- Features: 6
+- Hidden Size: 64
+- Target: 1
+- Activation: Relu
+
+```shell
+[Train - Epoch 0] Loss 31.089 | Accuracy 38.221 %
+*** [Validate - Epoch 0] Loss 5.670 | Accuracy 37.778 %
+[Train - Epoch 1] Loss 7.438 | Accuracy 38.221 %
+*** [Validate - Epoch 1] Loss 2.156 | Accuracy 37.778 %
+[Train - Epoch 2] Loss 2.521 | Accuracy 38.221 %
+*** [Validate - Epoch 2] Loss 1.223 | Accuracy 37.778 %
+[Train - Epoch 3] Loss 1.389 | Accuracy 38.221 %
+*** [Validate - Epoch 3] Loss 0.906 | Accuracy 37.778 %
+[Train - Epoch 4] Loss 1.050 | Accuracy 36.341 %
+*** [Validate - Epoch 4] Loss 0.756 | Accuracy 34.444 %
+[Train - Epoch 5] Loss 0.892 | Accuracy 35.464 %
+*** [Validate - Epoch 5] Loss 0.664 | Accuracy 32.222 %
+[Train - Epoch 6] Loss 0.788 | Accuracy 34.461 %
+*** [Validate - Epoch 6] Loss 0.597 | Accuracy 34.444 %
+[Train - Epoch 7] Loss 0.707 | Accuracy 35.088 %
+*** [Validate - Epoch 7] Loss 0.546 | Accuracy 34.444 %
+[Train - Epoch 8] Loss 0.641 | Accuracy 35.213 %
+*** [Validate - Epoch 8] Loss 0.504 | Accuracy 34.444 %
+[Train - Epoch 9] Loss 0.588 | Accuracy 35.088 %
+*** [Validate - Epoch 9] Loss 0.471 | Accuracy 34.444 %
+[Train - Epoch 10] Loss 0.544 | Accuracy 35.464 %
+```

@@ -5,7 +5,7 @@ use burn::{
     module::Module,
     nn::{loss::MseLoss, Linear, LinearConfig, Relu},
     prelude::Backend,
-    tensor::{ElementConversion, Int, Tensor},
+    tensor::{activation::sigmoid, ElementConversion, Int, Tensor},
 };
 
 #[derive(Config)]
