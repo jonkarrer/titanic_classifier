@@ -98,3 +98,39 @@ Correlations can help with finding relationships between variables. Strong corre
 ## Classification
 
 Now we need to create our features and classifications.
+
+The fields that we are interested in are:
+
+- sex
+- age
+- sibsp
+- fare
+- class
+
+These will be our features. The **survival** field will be our classification.
+
+### Data Points
+
+A single data point for this will be a 1D tensor of length 6 for the features, and a 1D tensor of length 1 for the classification. We group this into a struct called `DataPoint`. Simply looping through the data set and creating the data points will do the trick.
+
+### Batch
+
+We need to create 2 tensors for our model to interpret the data. Our feature tensor will be a 2D tensor, with shape [798, 6]. That's 798 rows and 6 columns. Our target tensor will be a 2D tensor, with shape [798, 1]. This will be considered a batch that the model can interpret. Since we are dealing with little data, we can just create a single batch.
+
+## Model
+
+Now we need to create the model to send our batches to. A simple regression neural network has these characteristics:
+
+- Input Layer: A Linear layer with 6 inputs (feature size), and 64 outputs (hidden size)
+- Activation: A Relu activation layer that will be applied to the hidden layer so that the output will be positive
+- Output Layer: A Linear layer with 1 input (hidden size), and 1 output (target size)
+
+### Loss Function
+
+We will simply forward the batches through the model's layers, and calculate the loss. For this task, we will use the Mean Squared Error (MSE) loss function.
+
+### Optimizer
+
+Now we need to choose the optimizer and learning rate. For this we will use Stochastic Gradient Descent (SGD) with a learning rate of 1e-4 to start.
+
+## Training
