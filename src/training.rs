@@ -1,7 +1,9 @@
+#![allow(dead_code)]
 use burn::{
     config::Config,
-    module::AutodiffModule,
-    optim::{AdamConfig, GradientsParams, Optimizer, SgdConfig},
+    module::{AutodiffModule, Module},
+    optim::{AdamConfig, GradientsParams, Optimizer},
+    record::{FullPrecisionSettings, NamedMpkFileRecorder},
     tensor::backend::AutodiffBackend,
 };
 
@@ -30,7 +32,7 @@ pub struct ExpConfig {
     pub dataset_size: usize,
 }
 
-pub fn train<B: AutodiffBackend>(device: B::Device) {
+pub fn train<B: AutodiffBackend>(model_path: &str, device: B::Device) {
     let optimizer = AdamConfig::new();
     let config = ExpConfig::new(optimizer);
     let mut model: Model<B> = ModelConfig::new().init(&device);
@@ -54,7 +56,7 @@ pub fn train<B: AutodiffBackend>(device: B::Device) {
 
         let grads = output.loss.backward();
         let grads = GradientsParams::from_grads(grads, &model);
-        model = optim.step(1e-2, model, grads);
+        model = optim.step(8e-3, model, grads);
 
         // validation
         let model_valid = model.valid();
@@ -68,4 +70,9 @@ pub fn train<B: AutodiffBackend>(device: B::Device) {
             output.accuracy,
         );
     }
+
+    let recorder = NamedMpkFileRecorder::<FullPrecisionSettings>::new();
+    model
+        .save_file(model_path, &recorder)
+        .expect("could not save model");
 }

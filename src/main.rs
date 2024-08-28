@@ -1,21 +1,21 @@
 mod data;
+mod infer;
 mod model;
 mod training;
 
-use burn::backend::{
-    wgpu::{AutoGraphicsApi, WgpuDevice},
-    Autodiff, Wgpu,
-};
-use training::train;
+use burn::backend::{wgpu::WgpuDevice, Autodiff, Wgpu};
 
-pub type MyDevice = Wgpu<AutoGraphicsApi, f32, i32>;
+pub type MyDevice = Wgpu<f32, i32>;
 pub type MyBackend = Autodiff<MyDevice>;
 
 pub fn get_device() -> WgpuDevice {
     WgpuDevice::default()
 }
 
+const MODEL_PATH: &str = "model/bce-adam";
+
 fn main() {
     let device = get_device();
-    train::<MyBackend>(device);
+    // training::train::<MyBackend>(MODEL_PATH, device);
+    infer::infer::<MyBackend>(MODEL_PATH, &device);
 }

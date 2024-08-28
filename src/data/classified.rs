@@ -1,6 +1,6 @@
-use burn::{prelude::Backend, tensor::Tensor};
-
+#![allow(dead_code)]
 use super::RawData;
+use burn::{prelude::Backend, tensor::Tensor};
 
 pub struct Batch<B: Backend> {
     pub inputs: Tensor<B, 2>, // [[f32, f32, ...], [f32, f32, ...], ...]

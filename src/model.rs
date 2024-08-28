@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use burn::{
     config::Config,
     module::Module,
@@ -6,7 +7,7 @@ use burn::{
     tensor::{ElementConversion, Int, Tensor},
 };
 
-use crate::data::Batch;
+use crate::data::{Batch, TestBatch};
 
 #[derive(Config)]
 pub struct ModelConfig {
@@ -67,6 +68,20 @@ impl<B: Backend> Model<B> {
         let loss = loss_func.forward(predictions.clone(), labels.clone());
 
         ClassificationOutput { loss, accuracy }
+    }
+
+    pub fn interface(&self, batch: &TestBatch<B>) -> Vec<(u32, i32)> {
+        let predictions = self.forward(batch.inputs.clone());
+
+        let predictions: Tensor<B, 2, Int> = predictions.greater_elem(0.5).int();
+        let prediction: Vec<i32> = predictions.into_data().to_vec().expect("to be ok");
+
+        let mut output = Vec::new();
+        for (i, id) in batch.ids.iter().enumerate() {
+            output.push((*id, prediction[i]));
+        }
+
+        output
     }
 
     fn accuracy(output: Tensor<B, 2>, targets: Tensor<B, 2, Int>) -> f32 {

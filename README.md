@@ -289,3 +289,14 @@ Configuration:
 [Train - Epoch 9] Loss 1.087 | Accuracy 67.043 %
 *** [Validate - Epoch 9] Loss 0.680 | Accuracy 72.222 %
 ```
+
+## Submission
+
+The model is now ready to be submitted. We run the Kaggle test csv through our model and submit our predictions. We got an official score of 0.64832. Not wonderful, but it was a great challenge.
+
+### Further Improvements
+
+We used the most basic and lightly correlated information that was easy to digest in rust. The important part of this project was to learn how to build a neural network in rust, from scratch, with a custom training loop. But if we were to go for Gold, here's what we could do:
+
+- Work on the dataset more. We could have created synthetic features with feature engineering. Experimenting with the data is always helpful for improving results.
+- Batches could have been created, with some shuffling and other modifications.
